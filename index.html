@@ -248,10 +248,15 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.15fr);
+      grid-template-areas: "portrait content";
       gap: 70px;
       align-items: center;
     }
+
+    /* Desktop: portrait on the left, hero introduction on the right. */
+    .hero-portrait { grid-area: portrait; order: 0; }
+    .hero-content { grid-area: content; order: 0; }
 
     .availability {
       display: inline-flex;
@@ -350,6 +355,32 @@
         rgba(255,255,255,0.04)
       );
       box-shadow: var(--shadow);
+    }
+
+    .hero-portrait {
+      position: relative;
+      align-self: end;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      min-height: 520px;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .hero-portrait img {
+      display: block;
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+      max-height: 620px;
+      object-fit: contain;
+      object-position: bottom center;
+      filter: none;
+      box-shadow: none;
     }
 
     .hero-card-inner {
@@ -708,6 +739,40 @@
   font-size: 14px;
 }
 
+/* PROJECT PDF LINKS */
+.project-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.project-pdf-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 17px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.project-pdf-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent, #6487ff);
+  background: rgba(100, 135, 255, .10);
+}
+.project-pdf-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 /* IMAGE GALLERY */
 
 .project-gallery {
@@ -843,6 +908,32 @@
       background: var(--card);
       backdrop-filter: blur(12px);
     }
+
+    .pdf-preview {
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      margin: 18px 0 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f4f6fa;
+    }
+    .pdf-preview iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #f4f6fa;
+    }
+    .pdf-preview-caption {
+      margin: -10px 0 18px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    @media (max-width: 700px) {
+      .pdf-preview { height: 300px; }
+    }
+
     .portfolio-project-top {
       display: flex;
       flex-wrap: wrap;
@@ -1061,14 +1152,91 @@
       transform: translateY(0);
     }
 
+
+    /* =========================================================
+       SUBTLE MOTION POLISH
+       Keep movement calm and professional, not distracting.
+       ========================================================= */
+    @keyframes portraitFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(97, 223, 155, 0.28); }
+      50% { box-shadow: 0 0 0 6px rgba(97, 223, 155, 0); }
+    }
+
+    .hero-portrait img {
+      animation: portraitFloat 6s ease-in-out infinite;
+      transform-origin: center bottom;
+      will-change: transform;
+    }
+
+    .status-dot {
+      animation: statusPulse 2.4s ease-out infinite;
+    }
+
+    .portfolio-project-card {
+      transition: transform 0.28s ease, border-color 0.28s ease,
+        box-shadow 0.28s ease;
+    }
+
+    .portfolio-project-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(112, 167, 255, 0.42);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+    }
+
+    .pdf-preview iframe {
+      transition: transform 0.35s ease;
+    }
+
+    .pdf-preview:hover iframe {
+      transform: scale(1.015);
+    }
+
+    .contact-link {
+      transition: transform 0.22s ease, border-color 0.22s ease,
+        background 0.22s ease;
+    }
+
+    .contact-link:hover {
+      transform: translateY(-2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .hero-portrait img,
+      .portfolio-project-card:hover,
+      .pdf-preview:hover iframe,
+      .contact-link:hover {
+        transform: none;
+      }
+    }
+
     /* =========================================================
        RESPONSIVE
        ========================================================= */
     @media (max-width: 1000px) {
       .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 50px;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "content"
+          "portrait";
+        gap: 28px;
       }
+
+      .hero-portrait { min-height: 0; }
+      .hero-content { min-width: 0; }
 
       .hero-card {
         max-width: 650px;
@@ -1361,62 +1529,9 @@
         </div>
 
 
-        <div class="hero-card reveal">
-          <div class="hero-card-inner">
-
-            <div class="code-window">
-
-              <div class="window-bar">
-                <i></i>
-                <i></i>
-                <i></i>
-              </div>
-
-              <div class="code-content">
-                <div><span class="code-purple">const</span> specialist = {</div>
-                <div>&nbsp;&nbsp;name:
-                  <span class="code-green">"Mohammed Kal El Kaum"</span>,
-                </div>
-                <div>&nbsp;&nbsp;focus:
-                  <span class="code-green">"GHL Automation"</span>,
-                </div>
-                <div>&nbsp;&nbsp;systems: [</div>
-                <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span class="code-blue">"CRM"</span>,
-                </div>
-                <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span class="code-blue">"Workflows"</span>,
-                </div>
-                <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span class="code-blue">"Pipelines"</span>,
-                </div>
-                <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span class="code-blue">"Funnels"</span>
-                </div>
-                <div>&nbsp;&nbsp;]</div>
-                <div>};</div>
-              </div>
-
-            </div>
-
-            <div class="mini-stats">
-              <div class="mini-stat">
-                <strong>GHL</strong>
-                <span>CRM Systems</span>
-              </div>
-
-              <div class="mini-stat">
-                <strong>CRM</strong>
-                <span>Lead Management</span>
-              </div>
-
-              <div class="mini-stat">
-                <strong>AI</strong>
-                <span>Automation Focus</span>
-              </div>
-            </div>
-
-          </div>
+        <div class="hero-portrait reveal">
+          <img src="images/profile-portrait.png"
+               alt="Mohammed Kal El Kaum, GoHighLevel CRM and Automation Specialist">
         </div>
 
       </div>
@@ -1529,17 +1644,20 @@
         </div>
         <h3>MedSkin Distribution</h3>
         <p class="project-subtitle">GHL Landing Page, Lead Automation &amp; CRM System</p>
+        <div class="pdf-preview" aria-label="MedSkin Portfolio PDF first-page preview">
+          <iframe src="pdfs/Medskin%20Portfolio.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0" title="MedSkin Portfolio PDF preview" loading="lazy"></iframe>
+        </div>
+        <p class="pdf-preview-caption">PDF preview · Open the full portfolio below.</p>
         <p class="portfolio-project-description">Configured product-specific Facebook lead workflows, CRM organization, opportunity tracking, and an ND YAG landing page for a medical aesthetics equipment business.</p>
         <div class="project-tags">
           <span>Facebook Lead Ads</span><span>Workflows</span><span>CRM</span><span>Sales Pipeline</span><span>Landing Page</span>
         </div>
-        <div class="portfolio-gallery-grid">
-          <a class="gallery-image" href="images/ndyag-landing-page.png" target="_blank" rel="noopener noreferrer"><img src="images/ndyag-landing-page.png" alt="MedSkin ND YAG landing page"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/facebook-lead-ndyag.png" target="_blank" rel="noopener noreferrer"><img src="images/facebook-lead-ndyag.png" alt="MedSkin ND YAG Facebook lead workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/facebook-lead-diode.png" target="_blank" rel="noopener noreferrer"><img src="images/facebook-lead-diode.png" alt="MedSkin DIODE Facebook lead workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/facebook-lead-ipl.png" target="_blank" rel="noopener noreferrer"><img src="images/facebook-lead-ipl.png" alt="MedSkin IPL Facebook lead workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/french-sales-pipeline.png" target="_blank" rel="noopener noreferrer"><img src="images/french-sales-pipeline.png" alt="MedSkin French sales pipeline"><span class="image-overlay">View Full Image ↗</span></a>
+        <div class="project-pdf-actions">
+          <a class="project-pdf-link" href="pdfs/Medskin%20Portfolio.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open MedSkin Portfolio PDF">
+            <span aria-hidden="true">📄</span> View MedSkin Portfolio PDF ↗
+          </a>
         </div>
+        <p class="project-pdf-note">Open the PDF to view the project details and supporting screenshots.</p>
       </article>
 
       <!-- BRIGHT PATH COACHING: SAMPLE PORTFOLIO -->
@@ -1550,22 +1668,18 @@
         </div>
         <h3>Bright Path Coaching</h3>
         <p class="project-subtitle">Workshop Registration, Attendance &amp; Follow-Up Automation</p>
+        <div class="pdf-preview" aria-label="Bright Path Coaching Portfolio PDF first-page preview">
+          <iframe src="pdfs/Bright%20Path%20Coaching%20Portfolio.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0" title="Bright Path Coaching Portfolio PDF preview" loading="lazy"></iframe>
+        </div>
+        <p class="pdf-preview-caption">PDF preview · Open the full portfolio below.</p>
         <p class="portfolio-project-description">Sample workflow blueprint for managing workshop registrations, confirmation messages, reminders, attendance status, no-shows, and consultation follow-up. Google Sheets and Make.com support attendance status syncing.</p>
         <div class="project-tags">
           <span>Workshop Funnel</span><span>Workflows</span><span>Pipeline</span><span>Make.com</span><span>Google Sheets</span>
         </div>
-        <div class="portfolio-gallery-grid">
-          <a class="gallery-image" href="images/1-1 Coaching Landing Page.png" target="_blank" rel="noopener noreferrer"><img src="images/1-1 Coaching Landing Page.png" alt="Bright Path Coaching 1-to-1 coaching landing page"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Free Workshop Booking & Landing page.png" target="_blank" rel="noopener noreferrer"><img src="images/Free Workshop Booking & Landing page.png" alt="Bright Path free workshop booking and landing page"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Bright Path Sales Pipeline.png" target="_blank" rel="noopener noreferrer"><img src="images/Bright Path Sales Pipeline.png" alt="Bright Path Coaching sales pipeline"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Workshop Registration.png" target="_blank" rel="noopener noreferrer"><img src="images/Workshop Registration.png" alt="Bright Path workshop registration workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Consultation Booking Automation.png" target="_blank" rel="noopener noreferrer"><img src="images/Consultation Booking Automation.png" alt="Bright Path consultation booking automation"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Workshop Follow-up Sequence.png" target="_blank" rel="noopener noreferrer"><img src="images/Workshop Follow-up Sequence.png" alt="Bright Path workshop follow-up sequence"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Attendance Status Workflow.png" target="_blank" rel="noopener noreferrer"><img src="images/Attendance Status Workflow.png" alt="Bright Path attendance status workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Make.com 1-1 Coaching Attendance Status.png" target="_blank" rel="noopener noreferrer"><img src="images/Make.com 1-1 Coaching Attendance Status.png" alt="Make.com coaching attendance status automation"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Make.com Workshop Attendance Status Tag.png" target="_blank" rel="noopener noreferrer"><img src="images/Make.com Workshop Attendance Status Tag.png" alt="Make.com workshop attendance status tag automation"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Nuture Attended Lead Workflow.png" target="_blank" rel="noopener noreferrer"><img src="images/Nuture Attended Lead Workflow.png" alt="Bright Path attended lead nurture workflow"><span class="image-overlay">View Full Image ↗</span></a>
-          <a class="gallery-image" href="images/Nuture No-Show Lead Workflow.png" target="_blank" rel="noopener noreferrer"><img src="images/Nuture No-Show Lead Workflow.png" alt="Bright Path no-show lead nurture workflow"><span class="image-overlay">View Full Image ↗</span></a>
+        <div class="project-pdf-actions">
+          <a class="project-pdf-link" href="pdfs/Bright%20Path%20Coaching%20Portfolio.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open Bright Path Coaching Portfolio PDF">
+            <span aria-hidden="true">📄</span> View Bright Path Coaching PDF ↗
+          </a>
         </div>
         <p class="sample-note">Portfolio sample / workflow blueprint — presented to demonstrate the proposed setup and automation logic.</p>
       </article>
